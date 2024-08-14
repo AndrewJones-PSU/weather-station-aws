@@ -2,6 +2,7 @@
 node_modules
 .env
 env.h
+iot_cert/*
 
 *.d.ts
 
