@@ -1,18 +1,20 @@
 #!/usr/bin/env node
 import * as cdk from "aws-cdk-lib";
 import { LambdaStack } from "../lib/LambdaStack";
+import { IotStack } from "../lib/IotStack";
 require("dotenv").config();
 
 // ===== App configuration =====================================================
 
 const app = new cdk.App();
 const props: cdk.StackProps = {
-    env: {
-        account: process.env.CDK_DEFAULT_ACCOUNT,
-        region: process.env.CDK_DEFAULT_REGION,
-    },
+	env: {
+		account: process.env.CDK_DEFAULT_ACCOUNT,
+		region: process.env.CDK_DEFAULT_REGION,
+	},
 };
 
 // ===== Stack configuration ===================================================
 
 new LambdaStack(app, "LambdaStack", props);
+new IotStack(app, "IotStack", props);
