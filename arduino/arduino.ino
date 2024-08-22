@@ -16,8 +16,8 @@ PM25_AQI_Data aqidata;
 bool isreading;
 
 // The MQTT topics that this device should publish/subscribe
-#define AWS_IOT_PUBLISH_TOPIC "ws-pittsburgh-1/dataup"
-#define AWS_IOT_SUBSCRIBE_TOPIC "ws-pittsburgh-1/request"
+#define AWS_IOT_PUBLISH_TOPIC "ws/ws-pittsburgh-1/dataup"
+#define AWS_IOT_SUBSCRIBE_TOPIC "ws/request"
 
 // Wifi and MQTT clients
 WiFiClientSecure net = WiFiClientSecure();
@@ -82,7 +82,7 @@ void connectAWS()
 	{
 		Serial.print(".");
 		delay(500);
-		Serial.println(client.lastError());
+		Serial.print(client.lastError());
 	}
 
 	Serial.println();
@@ -96,7 +96,9 @@ void connectAWS()
 	// Subscribe to a topic
 	client.subscribe(AWS_IOT_SUBSCRIBE_TOPIC);
 
-	client.publish(AWS_IOT_PUBLISH_TOPIC, "{\"version\":\"v0.1\",\"mtype\":\"message\",\"message\":\"ESP32 Online\"}");
+	char pubmessage[255];
+	sprintf(pubmessage, "{\"version\":\"v0.1\",\"deviceName\":\"%s\",\"mtype\":\"message\",\"message\":\"ESP32 Online\"}", THING_NAME);
+	client.publish(AWS_IOT_PUBLISH_TOPIC, pubmessage);
 
 	Serial.println("AWS IoT Connected!");
 }
@@ -119,6 +121,7 @@ void publishMessage()
 	alldata d = calculateAverages();
 	String str = String();
 	doc["version"] = "v0.1";
+	doc["deviceName"] = THING_NAME;
 	doc["mtype"] = "dataup";
 	doc["pm10standard"] = d.pm10standard;
 	doc["pm25standard"] = d.pm25standard;
