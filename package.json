@@ -20,6 +20,8 @@
     "typescript": "~5.5.3"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.632.0",
+    "@aws-sdk/client-iot-data-plane": "^3.631.0",
     "aws-cdk-lib": "2.150.0",
     "cdk-iot-core-certificates": "^1.0.650",
     "constructs": "^10.0.0",
