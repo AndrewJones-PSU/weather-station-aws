@@ -38,7 +38,7 @@ export class IotStack extends cdk.Stack {
 						Effect: "Allow",
 						Action: ["iot:Publish"],
 						Resource: [
-							`arn:aws:iot:${this.region}:${this.account}:topic/ws/${this.wsPittsburgh1.thingName}/*`,
+							`arn:aws:iot:${this.region}:${this.account}:topic/ws/dataup/${this.wsPittsburgh1.thingName}`,
 						],
 					},
 					{

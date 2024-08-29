@@ -49,7 +49,7 @@ export class DynamoLambdaRuleStack extends cdk.Stack {
 
 		this.iotLambdaRule = new iot.CfnTopicRule(this, "iotLambdaRule", {
 			topicRulePayload: {
-				sql: "SELECT * FROM 'ws/+/dataup'",
+				sql: "SELECT * FROM 'ws/dataup/#'",
 				actions: [
 					{
 						lambda: {

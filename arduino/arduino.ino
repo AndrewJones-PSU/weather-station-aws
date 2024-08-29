@@ -16,7 +16,7 @@ PM25_AQI_Data aqidata;
 bool isreading;
 
 // The MQTT topics that this device should publish/subscribe
-#define AWS_IOT_PUBLISH_TOPIC "ws/ws-pittsburgh-1/dataup"
+#define AWS_IOT_PUBLISH_TOPIC "ws/dataup/ws-pittsburgh-1"
 #define AWS_IOT_SUBSCRIBE_TOPIC "ws/request"
 
 // Wifi and MQTT clients
@@ -123,6 +123,10 @@ void publishMessage()
 	doc["version"] = "v0.1";
 	doc["deviceName"] = THING_NAME;
 	doc["mtype"] = "dataup";
+	JsonArray sensorList;
+	sensorList = doc.createNestedArray("sensorList");
+	sensorList.add("BME68X");
+	sensorList.add("PMSA003I");
 	doc["pm10standard"] = d.pm10standard;
 	doc["pm25standard"] = d.pm25standard;
 	doc["pm100standard"] = d.pm100standard;
