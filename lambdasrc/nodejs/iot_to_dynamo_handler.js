@@ -65,6 +65,6 @@ module.exports.main = async (event) => {
 		console.error(errorstr);
 		return errorstr;
 	} finally {
-		return data;
+		return "OK";
 	}
 };
