@@ -3,7 +3,6 @@ import { aws_lambda as lambda } from "aws-cdk-lib";
 import { aws_iot as iot } from "aws-cdk-lib";
 import { aws_iam as iam } from "aws-cdk-lib";
 import { Construct } from "constructs";
-const DynamoStack = require("./../cdk.out/DynamoStack.assets.json");
 require("dotenv").config();
 
 export class DynamoLambdaRuleStack extends cdk.Stack {
@@ -13,11 +12,13 @@ export class DynamoLambdaRuleStack extends cdk.Stack {
 	constructor(scope: Construct, id: string, props?: cdk.StackProps) {
 		super(scope, id, props);
 
+		// Get our ENV values for table names, make sure they aren't empty
 		let dataTableName = cdk.Fn.importValue("sensorscansTableName");
 		let messageTableName = cdk.Fn.importValue("messagesTableName");
 		if (!dataTableName) throw new Error("DATA_TABLE_NAME is not defined in .env");
 		if (!messageTableName) throw new Error("MESSAGE_TABLE_NAME is not defined in .env");
-
+		// Lambda function to write sensor data (and messages) from the weather
+		// stations to our DynamoDB instance
 		this.iotToDynamo = new lambda.Function(this, "IotToDynamo", {
 			runtime: lambda.Runtime.NODEJS_LATEST,
 			code: lambda.Code.fromAsset("lambdasrc/nodejs"),
@@ -28,6 +29,7 @@ export class DynamoLambdaRuleStack extends cdk.Stack {
 			},
 		});
 
+		// Get our table ARNs, allow our Lambda function to write to them
 		let sensorscansTableArn = cdk.Fn.importValue("sensorscansTableArn");
 		let messagesTableArn = cdk.Fn.importValue("messagesTableArn");
 
@@ -39,14 +41,7 @@ export class DynamoLambdaRuleStack extends cdk.Stack {
 			})
 		);
 
-		// this.cron_lambda.addToRolePolicy(
-		// 	new iam.PolicyStatement({
-		// 		actions: ["iot:Connect"],
-		// 		effect: iam.Effect.ALLOW,
-		// 		resources: [this.cron_lambda.functionArn],
-		// 	})
-		// );
-
+		// IoT rule piping data from weatherstations into the Lambda function
 		this.iotLambdaRule = new iot.CfnTopicRule(this, "iotLambdaRule", {
 			topicRulePayload: {
 				sql: "SELECT * FROM 'ws/dataup/#'",

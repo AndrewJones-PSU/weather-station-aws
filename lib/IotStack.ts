@@ -1,7 +1,6 @@
 import * as cdk from "aws-cdk-lib";
 import { aws_iot as iot } from "aws-cdk-lib";
 import { Construct } from "constructs";
-import { exec } from "child_process";
 import path = require("path");
 import fs = require("fs");
 
@@ -15,15 +14,16 @@ export class IotStack extends cdk.Stack {
 	constructor(scope: Construct, id: string, props?: cdk.StackProps) {
 		super(scope, id, props);
 
+		// Our IoT WeatherStation Thing
 		this.wsPittsburgh1 = new iot.CfnThing(this, "WsPittsburgh1", {
 			thingName: "ws-pittsburgh-1",
 		});
-
+		// Cert for the Thing
 		this.wsPittsburgh1Cert = new iot.CfnCertificate(this, "WsPittsburgh1Cert", {
 			status: "ACTIVE",
 			certificateSigningRequest: fs.readFileSync(path.resolve("./iot_cert/cert.csr"), "utf8"),
 		});
-
+		// CfnPolicy for the Thing
 		this.wsPittsburgh1Policy = new iot.CfnPolicy(this, "WsPittsburgh1Policy", {
 			policyName: "WsPittsburgh1Policy",
 			policyDocument: {
@@ -54,7 +54,7 @@ export class IotStack extends cdk.Stack {
 				],
 			},
 		});
-
+		// Associate the Thing with our Certificate
 		this.wsPittsburgh1ThingPrincipalAttachment = new iot.CfnThingPrincipalAttachment(
 			this,
 			"ThingPrincipalAttachment",
@@ -63,7 +63,7 @@ export class IotStack extends cdk.Stack {
 				principal: this.wsPittsburgh1Cert.attrArn,
 			}
 		);
-
+		// Associate the Policy with our Certificate (and in turn our Thing)
 		this.wsPittsburgh1PolicyPrincipalAttachment = new iot.CfnPolicyPrincipalAttachment(
 			this,
 			"PolicyPrincipalAttachment",
