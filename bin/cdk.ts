@@ -6,6 +6,7 @@ import { PolicyStack } from "../lib/PolicyStack";
 import { PolicyStackProps } from "../lib/PolicyStack";
 import { DynamoStack } from "../lib/DynamoStack";
 import { DynamoLambdaRuleStack } from "../lib/DynamoLambdaRuleStack";
+import { WebappStack } from "../lib/WebappStack";
 require("dotenv").config();
 
 // ===== App configuration =====================================================
@@ -36,3 +37,4 @@ let lstack = new LambdaStack(app, "LambdaStack", props);
 //new PolicyStack(app, "PolicyStack", policyprops);
 new DynamoStack(app, "DynamoStack", props);
 new DynamoLambdaRuleStack(app, "DynamoLambdaRuleStack", props);
+new WebappStack(app, "WebappStack", props);
